@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import Header from './Header';
-import JapanGrid from './JapanGrid';
-import SvgGrid from './SvgGrid';
 import Corsica from './Corsica';
 
 const App: React.FC = () => {
