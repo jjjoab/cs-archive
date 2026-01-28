@@ -1,0 +1,1269 @@
+  filter: none !important;
+/* Invert button style */
+.invert-button {
+  margin-left: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.invert-button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Invert colors globally except images */
+.inverted {
+  filter: invert(1) hue-rotate(180deg);
+  transition: filter 0.3s ease;
+}
+.inverted img, .inverted .arca-logo, .inverted .header-icon, .inverted .logo-img, .inverted .square-image, .inverted .shop-image, .inverted .texture-box img, .inverted .svg-box img {
+  filter: none !important;
+}
+/* Invert colors globally except images */
+.inverted {
+  filter: invert(1) hue-rotate(180deg);
+  transition: filter 0.3s ease;
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.inverted img, .inverted .arca-logo, .inverted .header-icon, .inverted .logo-img, .inverted .square-image, .inverted .shop-image, .inverted .texture-box img, .inverted .svg-box img {
+  filter: none !important;
+}
+  .nav-item .label {
+    display: none;
+  }
+:root{
+  --header-height: 80px; /* default header height */
+}
+
+body {
+  background-color:  #000000;
+  color: white;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+/* Ensure all page content sits below the fixed header by default.
+   Some pages didn't use the `.page` container, so add a global body top padding
+   that matches the header height. Individual pages still can add extra spacing
+   via their own `.page` padding if desired. */
+body {
+  padding-top: var(--header-height);
+}
+
+.gallery-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: transparent;
+  box-shadow: none;
+  border-top: none;
+}
+
+.gallery-controls label {
+  font-size: 0.9rem;
+}
+
+.gallery-controls input[type="range"] {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.shuffle-button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.shuffle-button:hover {
+  background: white;
+  color:  #000000;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--gap, 16px);
+  padding-left: var(--left-gap, 40px);
+  padding-right: var(--right-gap, 80px);
+  grid-auto-rows: auto;
+  grid-auto-flow: dense;
+  align-items: start;
+    width: 100%;
+  box-sizing: border-box;
+}
+
+
+.item {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.item img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  gap: 16px;
+  max-height: 100px;         /* 👈 Set a cap */
+  height: auto;
+  overflow: hidden;          /* Prevents overflow (like the image bursting out) */
+}
+
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-links a,
+.nav-links button {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  text-decoration: underline;
+}
+
+.nav-links button.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.page {
+  /* Reserve space at the top equal to the header height so content doesn't sit under the fixed header.
+     The header height is controlled via the --header-height CSS variable (responsive). */
+  padding-top: var(--header-height);
+  padding-right: 60px;
+  padding-left: 60px;
+  padding-bottom: 60px;
+  color: white;
+  background-color: black;
+  box-sizing: border-box;
+}
+
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.shop-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 💻 On screens ≥ 768px (tablet/laptop and up) */
+@media (min-width: 768px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.book-container {
+  text-align: center;
+  color: white;
+  padding: 2rem;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  margin: 2rem auto;
+  max-width: 1000px;
+}
+.book-page {
+  padding: 2rem;
+  background:  #ffffff;
+  color:  #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.grid-cell {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.book-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.book-controls button {
+  padding: 6px 12px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.book-controls button:disabled {
+  opacity: 0.3;
+}
+.gallery.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  justify-items: center;
+  padding: 24px;
+}
+
+.gallery .item img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  background: #000000;
+}
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+
+.grid-item {
+  background: 0a0a0a;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.square-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.project-link {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.project-link:hover {
+  text-decoration: underline;
+}
+
+.project-content {
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.scroll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid white;
+}
+
+.grid-image-box {
+  border: 1px solid white;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: 0a0a0a;
+}
+
+
+
+.svg-scroll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Smaller min width for mobile */
+  gap: 10px;
+  padding: 2rem 0;
+  overflow-x: auto;
+}
+
+
+
+.svg-box img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  filter: brightness(1); /* optional tweak */
+  transition: filter 0.3s ease;
+}
+
+.svg-box:hover img {
+  filter: brightness(1.3); /* subtle highlight on hover */
+}
+
+.svg-box {
+  aspect-ratio: 1 / 1; /* ensures square shape */
+ /* background-color: #0a0a0a; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.svg-box:hover {
+  transform: scale(1.93);
+}
+.texture-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.texture-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.texture-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease-in-out;
+}
+
+.texture-box:hover img {
+  filter: blur(3px) grayscale(100%) contrast(200%) brightness(200%);
+}
+.-controls {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid white;
+  border-radius: 8px;
+  z-index: 10;
+  color: white;
+}
+
+.floating-controls {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 10px 16px;
+  z-index: 10;
+  color: white;
+  background: transparent;
+}
+
+.floating-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.floating-controls input[type='range'] {
+  width: 100px;
+}
+
+.floating-controls button {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.gallery-wrapper {
+  padding-left: clamp(5rem, 12vw, 12rem);
+  padding-right: clamp(10rem, 28vw, 28rem);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+
+.item.wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .gallery-wrapper {
+    padding-left: 3vw;
+    padding-right: 3vw;
+  }
+
+@media (max-width: 768px) {
+  .gallery {
+    --left-gap: 16px;
+    --right-gap: 48px;
+    grid-template-columns: 1fr !important; /* Force single column */
+  }
+  }
+}  .scroll-grid-wrapper {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 32px;
+  padding-bottom: 20px;
+}
+
+.scroll-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.grid-image-box img {
+  height: 200px;
+  object-fit: contain;
+  border: 1px solid #444;
+}
+
+.horizontal-scroll-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}
+
+/* Optional tweaks for layout consistency */
+.svg-scroll-grid,
+.svg-box,
+.scroll-grid,
+.grid-image-box {
+  margin-bottom: 0;
+}
+
+.projects-page {
+  padding: 0 5vw;
+ 
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none; /* Remove default styling */
+  width: 150px;
+  height: 2px;
+  background: white;
+  cursor: pointer;
+  margin: 8px 0;
+  outline: none;
+}
+
+/* WebKit - Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: white;
+  border: none;
+}
+
+/* WebKit - Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 12px;
+  width: 12px;
+  background: white;
+  border-radius: 50%;
+  margin-top: -5px; /* Centers the thumb vertically */
+}
+
+/* Firefox - Track */
+input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: white;
+}
+
+/* Firefox - Thumb */
+input[type="range"]::-moz-range-thumb {
+  height: 12px;
+  width: 12px;
+  background: white;
+  border-radius: 50%;
+  border: none;
+}
+
+/* Optional: Hide thumb entirely */
+input[type="range"].no-thumb::-webkit-slider-thumb,
+input[type="range"].no-thumb::-moz-range-thumb {
+  display: none;
+}
+
+@font-face {
+  font-family: 'MyFont';
+  src: url('./assets/fonts/SlightChance-Regular.woff2') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AnotherFont';
+  src: url('./assets/fonts/AugsburgerSchriftCAT.ttf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Add utility classes */
+.font-myfont {
+  font-family: 'MyFont', sans-serif;
+}
+
+.font-another {
+  font-family: 'AnotherFont', sans-serif;
+}
+
+
+
+
+/* Additional styles for contact section */
+.contact-stretch {
+  font-family: 'Arial', sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.15em; /* super close kerning */
+  transform: scaleX(2);
+  color: white;
+  margin-top: 6rem; /* large space above */
+  margin-bottom: 6rem; /* large space below */
+  text-align: center;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4vw;                 /* Close to edges but with breathing room */
+  height: var(--header-height);
+  box-sizing: border-box;
+}
+
+/* Centered small Arca A logo by default */
+.logo-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: white;
+  font-family: inherit;
+}
+
+.logo-container:hover {
+  text-decoration: underline;
+}
+
+.logo-container .toggle-label {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .logo-container {
+    left: 15%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 40vw;
+    min-width: 80px;
+    margin-left: 0;
+  }
+  .nav-links {
+    right: 8px;
+    gap: 12px;
+  }
+  .nav-links {
+    right: 1rem;
+    gap: 12px;
+  }
+  .arca-logo {
+    height: 24px;
+    max-width: 120px;
+  }
+    .nav-links {
+      right: 1rem;
+      gap: 12px;
+    }
+  .page h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.arca-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+/* Ensure nav links don't overlap the centered logo visually */
+.nav-links {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  position: absolute;
+  right: 4vw; /* mirror header padding */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1200; /* ensure nav sits above centered logo if needed */
+}
+
+.header-icon {
+  height: 28px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  filter: none; /* show icons as they are (no inversion) */
+}
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+}
+
+.nav-links img.header-icon {
+  display: inline-block;
+}
+
+/* nav item hover behaviour: show label and move siblings out of the way */
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border-radius: 8px;
+  transition: transform 220ms ease, opacity 220ms ease;
+  color: white;
+}
+
+.nav-item .label {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease, transform 220ms ease;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  color: white;
+}
+
+.nav-item:hover .header-icon {
+  transform: scale(1.35);
+  transition: transform 220ms ease;
+}
+
+.nav-item:hover .label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* move non-hovered siblings slightly away when hovering the nav */
+.nav-links:hover .nav-item:not(:hover) {
+  transform: translateX(12px);
+  opacity: 0.95;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root { --header-height: 64px; }
+  .arca-logo { height: 28px; }
+  .logo-container { top: 50%; transform: translate(-50%, -50%); padding: 4px 8px; }
+  .nav-links { right: 1rem; gap: 12px; }
+  .page { padding-top: calc(var(--header-height) + 16px); }
+}
+
+@media (max-width: 420px) {
+  :root { --header-height: 56px; }
+  .arca-logo { height: 24px; }
+  .nav-links { right: 8px; gap: 10px; }
+  .header-icon { height: 20px; }
+}
+
+.item.with-caption {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.item.with-caption img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.3s ease;
+}
+
+.item.with-caption:hover img {
+  image-rendering: pixelated;
+  /*transform: scale(10);*/
+  transform-origin: center;
+  filter: brightness(0.3);
+}
+
+
+.caption {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  pointer-events: none;
+  opacity: 1; /* Default: visible for mobile */
+  transition: opacity 0.3s ease;
+}
+
+.item.with-caption:hover .caption {
+  opacity: 1;
+}
+
+
+.svg-scroll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.svg-box img {
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.svg-box img:hover {
+  transform: scale(1.05);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.modal-content img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  margin: 0 auto;
+}
+
+.close-button {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+  text-align: center;
+}
+
+
+
+.horizontal-slider {
+  display: flex;
+  width: 200vw; /* Two slides, each 100vw wide */
+  transition: transform 0.4s ease-in-out;
+  flex-wrap: nowrap;
+}
+
+
+
+.grid-nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.grid-nav-buttons button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.slide:nth-child(1) {
+  min-height: 80vh;
+}
+
+.slide:nth-child(2) {
+  min-height: 80vh;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+
+/* Scroll snapping for the slider */
+.slider-wrapper {
+  overflow-x: auto;
+  justify-content: center;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-slider {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+}
+
+.slide {
+  width: 1920px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 1rem;
+
+}
+
+.snap-child {
+  scroll-snap-align: start;
+  padding: 14px;
+  max-width: 100vw ;
+}
+
+/* Optional: hide scrollbars for a cleaner look */
+.slider-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.slider-wrapper {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+  
+}
+
+.svg-filter-controls {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.svg-filter-controls button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.svg-filter-controls button:hover,
+.svg-filter-controls button.active {
+  background: white;
+  color: #0a0a0a;
+}
+
+h1 {
+  font-family: 'AnotherFont', sans-serif;
+}
+.logo-img {
+  height: 40px; /* or 80px depending on visual size */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .caption {
+    opacity: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .logo-img {
+    height: 40px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .logo-img {
+    height: 56px;
+  }
+    .gallery-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+}
+
+/* Japan Grid Controls */
+.japan-grid-container {
+  width: 100%;
+}
+
+.japan-grid-controls {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 10px;
+}
+
+.toggle-btn {
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: white;
+  color: black;
+}
+
+.toggle-btn.active {
+  background-color: white;
+  color: black;
+  font-weight: bold;
+}
+
+/* Timeline Styles */
+.timeline {
+  position: relative;
+  padding: 40px 0;
+  margin: 0 auto;
+  transform-origin: top center;
+  transition: transform 0.2s ease-out;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background-color: white;
+}
+
+.timeline-item {
+  position: absolute;
+  display: flex;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+  width: 100%;
+  z-index: 1;
+  transition: z-index 0.2s ease;
+  align-items: flex-start;
+}
+
+.timeline-item:hover {
+  z-index: 50;
+}
+
+.timeline-item.left {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.timeline-item.right {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0s; }
+.timeline-item:nth-child(2) { animation-delay: 0.1s; }
+.timeline-item:nth-child(3) { animation-delay: 0.2s; }
+.timeline-item:nth-child(4) { animation-delay: 0.3s; }
+.timeline-item:nth-child(5) { animation-delay: 0.4s; }
+.timeline-item:nth-child(n+6) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) var(--item-offset, translateX(0));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) var(--item-offset, translateX(0));
+  }
+}
+
+.timeline-marker {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 30px;
+  position: relative;
+  min-width: 100px;
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  right: 22px;
+  top: 0;
+  box-shadow: 0 0 0 4px black;
+}
+
+.timeline-content {
+  width: 90%;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-date {
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #ccc;
+}
+
+.timeline-year-marker {
+  position: absolute;
+  left: -5000px;
+  transform: translateY(-50%);
+  width: 4850px;
+  text-align: right;
+  padding-right: 100px;
+  z-index: 100;
+}
+
+.timeline-year-marker span {
+  font-size: 20rem;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.timeline-image {
+  width: 100%;
+  max-width: 18360px;
+  position: relative;
+}
+
+.timeline-image img {
+  width: 90%;
+  height: auto;
+  display: block;
+  border: 1px solid white;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  filter: brightness(1);
+}
+
+.timeline-image img:hover {
+  transform: scale(1.15);
+  filter: brightness(1.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.timeline-event-name {
+  position: absolute;
+  right: -2200px;
+  top: 0;
+  color: #ccc;
+  font-size: 20rem;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 2px;
+}
+
+.timeline-image:hover .timeline-event-name {
+  opacity: 1;
+}
+
+/* Zoom Slider */
+.zoom-slider-container {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: 8px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(4px);
+}
+
+.zoom-slider-container label {
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.zoom-slider {
+  width: 120px;
+  cursor: pointer;
+}
+
+.zoom-value {
+  color: white;
+  font-size: 0.85rem;
+  min-width: 45px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .zoom-slider-container {
+    top: 70px;
+    left: 10px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .zoom-slider {
+    width: 80px;
+  }
+
+  .timeline::before {
+    left: 20px;
+  }
+
+  .timeline-item {
+    flex-direction: column;
+  }
+
+  .timeline-marker {
+    width: 100%;
+    justify-content: flex-start;
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+
+  .timeline-dot {
+    left: 14px;
+    right: auto;
+  }
+
+  .timeline-content {
+    width: 100%;
+    padding-left: 50px;
+  }
+}
+
+
+
