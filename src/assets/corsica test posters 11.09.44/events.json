@@ -1,0 +1,33 @@
+{
+  "events": [
+    {
+      "eventId": "2007-09-21__bleep43",
+      "date": "2007-09-21",
+      "year": 2007,
+      "month": 9,
+      "day": 21,
+      "title": "Bleep43",
+      "lineup": [
+        "Surgeon",
+        "Legowelt",
+        "Newworldaquarium",
+        "Plant43",
+        "Jo Johnson"
+      ],
+      "precision": "day"
+    },
+    {
+      "eventId": "2012-03-24__rupture",
+      "date": "2012-03-24",
+      "year": 2012,
+      "month": 3,
+      "day": 24,
+      "title": "Rupture",
+      "lineup": [
+        "Various Artists"
+      ],
+      "precision": "day"
+    }
+  ],
+  "parseDate": "2026-01-28T16:09:22.440Z"
+}
