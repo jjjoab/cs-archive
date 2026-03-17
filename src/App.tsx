@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [openFilenameInTimeline, setOpenFilenameInTimeline] = useState(false);
   const useVideoLoadingScreen = LOADING_SCREEN_TYPE === 'video' && window.innerWidth > 768;
 
-  const ActiveLoadingScreen = useVideoLoadingScreen ? LoadingScreen2 : LoadingScreen;
+  const ActiveLoadingScreen = useVideoLoadingScreen ? LoadingScreen : LoadingScreen;
 
   return (
     <>
