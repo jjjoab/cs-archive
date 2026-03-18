@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 // The original import attempted to load the video from `src/assets/video/...`.
-// The actual file lives in `public/videos/IMAG0029.MOV` and is served at `/videos/...`.
-const videoSrc = '/videos/IMAG0029.MOV';
+const videoSrc = '';
 
 interface LoadingScreenProps {
   onComplete: () => void;

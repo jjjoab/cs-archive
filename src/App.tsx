@@ -3,7 +3,6 @@ import Corsica from './Corsica';
 import CorsicaFilename from './CorsicaFilename';
 import IndexList from './IndexList';
 import LoadingScreen from './LoadingScreen';
-import LoadingScreen2 from './LoadingScreen2';
 import { AudioProvider } from './components/AudioProvider';
 import { SearchProvider } from './contexts/SearchContext';
 import SearchBar from './components/SearchBar';
