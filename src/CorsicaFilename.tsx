@@ -60,7 +60,7 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
   useEffect(() => {
     setIsTimeline(initialTimeline);
   }, [initialTimeline]);
-  const [gridColumns, setGridColumns] = useState(() => window.innerWidth <= 768 ? 3 : 6);
+  const [gridColumns, setGridColumns] = useState(6);
   const [rowSize, setRowSize] = useState(200); // Default row height for horizontal scroll
   const [timelineStats, setTimelineStats] = useState({ min: 0, max: 0, range: 0 });
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
@@ -944,9 +944,9 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
           </div>
           {indexGroups.map((group) => (
             <div key={group.year} className="index-year-row">
-              <div className="index-year-meta">
+              {/* <div className="index-year-meta">
                 <div className="index-year-label">{group.year}</div>
-              </div>
+              </div> */}
               <div
                 className={isHorizontalScroll ? "svg-scroll-grid index-year-grid scroll-horizontal carousel-scroll" : "svg-scroll-grid index-year-grid"}
                 ref={isHorizontalScroll ? (el) => { rowRefs.current[group.year] = el; } : undefined}

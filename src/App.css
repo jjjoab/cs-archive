@@ -35,10 +35,8 @@
   }
 }
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 .logo:hover {
@@ -88,6 +86,7 @@
   border: none;
   background: transparent;
   color: #171717;
+  letter-spacing: 0.3px;
   border-radius: 0;
   cursor: pointer;
   letter-spacing: 0.5px;
@@ -213,8 +212,8 @@
   /* Constrain width and center content on larger screens */
   max-width: 1200px;
   margin: 0 auto;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 80px;
+  padding-right: 80px;
   box-sizing: border-box;
   overflow-anchor: none;
 }
@@ -225,17 +224,17 @@
 
 @media (max-width: 768px) {
   .corsica-grid-container {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 80px;
+    padding-right: 80px;
   }
 
   .controls-menu-btn {
-    bottom: 12px;
-    right: 12px;
+    bottom: 16px;
+    right: 16px;
   }
 
   .controls-menu-btn.with-player-open {
-    bottom: 100px;
+    bottom: 112px;
   }
 
   .corsica-grid-controls {
@@ -254,8 +253,8 @@
 
 @media (max-width: 420px) {
   .corsica-grid-container {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 80px;
+    padding-right: 80px;
   }
 
   .toggle-view-btn {
@@ -913,7 +912,7 @@
   font-size: 32px;
   margin: 0;
   color: #ffffff;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .index-list-filter {
@@ -1093,8 +1092,8 @@
 /* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .controls-menu-btn {
-    right: 22px;
-    bottom: 98px;
+    right: 16px;
+    bottom: 16px;
   }
 
   .corsica-grid-controls {
@@ -1145,8 +1144,8 @@
 
 @media (max-width: 420px) {
   .controls-menu-btn {
-    right: 14px;
-    bottom: 92px;
+    right: 16px;
+    bottom: 16px;
   }
 
   .corsica-grid-controls {

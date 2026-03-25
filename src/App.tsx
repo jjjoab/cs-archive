@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Corsica from './Corsica';
-import CorsicaFilename from './CorsicaFilename';
+import CorsicaNew from './corsicanew';
 import IndexList from './IndexList';
 import LoadingScreen from './LoadingScreen';
+import LandingPage from './LandingPage';
 import { AudioProvider } from './components/AudioProvider';
 import { SearchProvider } from './contexts/SearchContext';
 import SearchBar from './components/SearchBar';
@@ -13,17 +13,27 @@ const LOADING_SCREEN_TYPE: 'images' | 'video' = 'video';
 
 const App: React.FC = () => {
   const [view, setView] = useState<'json' | 'filename' | 'list'>('filename');
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasEnteredArchive, setHasEnteredArchive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isHorizontalScroll, setIsHorizontalScroll] = useState(false);
   const [openFilenameInTimeline, setOpenFilenameInTimeline] = useState(false);
   const useVideoLoadingScreen = LOADING_SCREEN_TYPE === 'video' && window.innerWidth > 768;
 
   const ActiveLoadingScreen = useVideoLoadingScreen ? LoadingScreen : LoadingScreen;
 
+  const handleEnterArchive = () => {
+    setHasEnteredArchive(true);
+    setIsLoading(true);
+  };
+
   return (
     <>
     <SearchProvider>
     <AudioProvider>
+      {!hasEnteredArchive ? (
+        <LandingPage onEnterArchive={handleEnterArchive} />
+      ) : (
+        <>
       {isLoading && <ActiveLoadingScreen onComplete={() => setIsLoading(false)} />}
       <div className="archive-header">
         <div
@@ -76,7 +86,8 @@ const App: React.FC = () => {
             }}
           />
         ) : view === 'filename' ? (
-          <CorsicaFilename
+          <CorsicaNew
+            source="filename"
             onShowIndexList={() => setView('list')}
             onShowIndexRegular={() => {
               setOpenFilenameInTimeline(false);
@@ -87,10 +98,18 @@ const App: React.FC = () => {
             initialTimeline={openFilenameInTimeline}
           />
         ) : (
-          <Corsica onShowIndexList={() => setView('list')} onShowIndexRegular={() => setView('filename')} isHorizontalScroll={isHorizontalScroll} setIsHorizontalScroll={setIsHorizontalScroll} />
+          <CorsicaNew
+            source="json"
+            onShowIndexList={() => setView('list')}
+            onShowIndexRegular={() => setView('filename')}
+            isHorizontalScroll={isHorizontalScroll}
+            setIsHorizontalScroll={setIsHorizontalScroll}
+          />
         )}
       </div>
       <div className="site-footer">Corsicastudios.com | @Corsicastudios</div>
+        </>
+      )}
     </AudioProvider>
     </SearchProvider>
     </>

@@ -1,80 +1,63 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
-interface LoadingPoster {
-  src: string;
-  x: number;
-  y: number;
-  rot: number;
-}
+import videoSrc from './assets/video/load2.mov';
 
 interface LoadingScreenProps {
   onComplete: () => void;
 }
 
-const posterModules = import.meta.glob('/src/assets/corsica test posters/*.{webp,jpg,jpeg,png}', { eager: true }) as Record<string, { default: string }>;
-
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
-  const allPosters = useMemo(() => Object.values(posterModules).map(mod => mod.default), []);
-  const [shownPosters, setShownPosters] = useState<LoadingPoster[]>([]);
   const [fadeInOverlay, setFadeInOverlay] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
+  const [videoRevealed, setVideoRevealed] = useState(false);
 
   useEffect(() => {
-    if (allPosters.length === 0) {
-      onComplete();
-      return;
-    }
+    const revealTimeout = setTimeout(() => setVideoRevealed(true), 500);
+    const titleTimeout = setTimeout(() => setShowTitle(true), 2000);
+    const fadeTimeout = setTimeout(() => {
+      setFadeInOverlay(true);
+      setShowTitle(false);
+    }, 5000);
+    const completeTimeout = setTimeout(onComplete, 5600);
 
-    const shuffled = [...allPosters].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, Math.min(70, shuffled.length));
-
-    let index = 0;
-    const interval = setInterval(() => {
-      const src = selected[index];
-      const next: LoadingPoster = {
-        src,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        rot: (Math.random() - 0.5) * 20,
-      };
-      setShownPosters(prev => [...prev, next]);
-      index += 1;
-
-      if (index >= selected.length) {
-        clearInterval(interval);
-        setFadeInOverlay(true);
-        setTimeout(() => setShowTitle(true), 1500);
-        setTimeout(() => setShowTitle(false), 3600);
-        setTimeout(onComplete, 4200);
-      }
-    }, 41);
-
-    return () => clearInterval(interval);
-  }, [allPosters, onComplete]);
+    return () => {
+      clearTimeout(revealTimeout);
+      clearTimeout(titleTimeout);
+      clearTimeout(fadeTimeout);
+      clearTimeout(completeTimeout);
+    };
+  }, [onComplete]);
 
   return (
     <div className="loading-overlay" onClick={onComplete}>
+      <video
+        className="loading-video"
+        src={videoSrc}
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: 0,
+        }}
+        onLoadedMetadata={(e) => {
+          const videoElement = e.currentTarget;
+          videoElement.playbackRate = 1.0;
+          videoElement.currentTime = 4.5;
+        }}
+      />
+      <div className={`loading-intro-black ${videoRevealed ? 'revealed' : ''}`} />
       <div className={`loading-blackout ${fadeInOverlay ? 'visible' : ''}`} />
       <div className={`loading-title ${showTitle ? 'visible' : ''}`}>
         <span className="loading-title-word">CORSICA</span>
         <span className="loading-title-word">STUDIOS</span>
         <span className="loading-title-word">ARCHIVE</span>
-      </div>
-      <div className="loading-poster-field">
-        {shownPosters.map((poster, i) => (
-          <img
-            key={`${poster.src}-${i}`}
-            src={poster.src}
-            alt="loading poster"
-            className="loading-poster"
-            style={{
-              left: `${poster.x}vw`,
-              top: `${poster.y}vh`,
-              transform: `translate(-50%, -50%) rotate(${poster.rot}deg)`
-            }}
-          />
-        ))}
       </div>
     </div>
   );

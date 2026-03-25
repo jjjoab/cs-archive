@@ -378,8 +378,22 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
             <div className="zoom-value">{isHorizontalScroll ? `${rowSize}px` : `${gridColumns} cols`}</div>
           </div>
           {indexGroups.map((group) => (
-            <div key={group.year} className="index-year-row">
-              <div className="index-year-meta">
+            <div
+              key={group.year}
+              className="index-year-row"
+              style={{ position: 'relative' }}
+            >
+              <div
+                className="index-year-meta"
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 2,
+                  pointerEvents: 'none'
+                }}
+              >
                 <div className="index-year-label">{group.year}</div>
               </div>
               <div
@@ -395,8 +409,9 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
                   paddingLeft: '40%',
                   paddingRight: '40%',
                   alignItems: 'center',
-                  height: `${rowSize}px`
-                } : { gridTemplateColumns: `repeat(${gridColumns}, minmax(0, 1fr))` }}
+                  height: `${rowSize}px`,
+                  width: '100%'
+                } : { gridTemplateColumns: `repeat(${gridColumns}, minmax(0, 1fr))`, width: '100%' }}
               >
                 {group.items.map((item, index) => {
                   const centerIndex = activeCenterByYear[group.year] ?? Math.floor(group.items.length / 2);

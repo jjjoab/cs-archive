@@ -69,7 +69,7 @@
   color: #ffffff;
   font-size: 16px;
   font-weight: normal;
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
@@ -159,6 +159,128 @@ body,
    via their own `.page` padding if desired. */
 body {
   padding-top: var(--header-height);
+}
+
+.landing-page {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: #171717;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  border-top: 3px solid #ffffff;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.landing-page__blend-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: lighten;
+  opacity: 0.62;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.landing-page__topbar {
+  position: relative;
+  z-index: 2;
+  height: 78px;
+  border: 3px solid #ffffff;
+  border-top: none;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.landing-page__logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+}
+
+.landing-page__menu {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-page__row {
+  flex: 1;
+  min-height: 0;
+  border: 3px solid #ffffff;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  box-sizing: border-box;
+  background: transparent;
+  color: inherit;
+}
+
+.landing-page__menu > :last-child {
+  border-bottom: 3px solid #ffffff;
+}
+
+.landing-page__row--interactive {
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+}
+
+.landing-page__row--interactive:hover,
+.landing-page__row--interactive:focus-visible {
+  background: #ffffff;
+  color: #171717;
+  outline: none;
+}
+
+.landing-page__label {
+  font-family: 'PPFragment Glare', serif !important;
+  font-size: clamp(4rem, 10vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  display: block;
+}
+
+.landing-page--large .landing-page__label {
+  font-size: clamp(4.6rem, 11.3vw, 11.3rem);
+}
+
+.landing-page--compact .landing-page__label {
+  font-size: clamp(2rem, 6vw, 5rem);
+}
+
+@media (max-width: 768px) {
+  .landing-page__topbar {
+    height: 72px;
+    padding: 0 18px;
+  }
+
+  .landing-page__logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .landing-page__row {
+    padding: 0 16px;
+  }
+
+  .landing-page__label {
+    font-size: clamp(3rem, 16vw, 7rem);
+    line-height: 0.88;
+  }
 }
 
 .gallery-controls {
@@ -447,6 +569,8 @@ body {
   gap: 24px;
   padding: 2rem 0;
   overflow-x: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .index-year-list {
@@ -465,10 +589,8 @@ body {
 }
 
 .index-year-row {
-  display: grid;
-  grid-template-columns: 64px 1fr; /* left column for date label, right for content */
-  align-items: start;
-  column-gap: 8px;
+  display: block;
+  width: 100%;
 }
 
 .index-year-meta {
@@ -1005,11 +1127,7 @@ input[type="range"].no-thumb::-moz-range-thumb {
 }
 
 
-.svg-scroll-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 16px;
-}
+/* svg-scroll-grid columns are controlled via inline style */
 
 .svg-box img {
   width: 110%;
@@ -1480,8 +1598,8 @@ h1 {
 /* Zoom Buttons */
 .zoom-buttons-container {
   position: fixed;
-  right: 28px;
-  bottom: 108px;
+  right: 16px;
+  bottom: 84px;
   transform: none;
   background-color: transparent;
   padding: 0;
@@ -1565,15 +1683,15 @@ h1 {
 
 @media (max-width: 768px) {
   .zoom-buttons-container {
-    right: 20px;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
+    right: 12px;
+    top: auto;
+    bottom: 84px;
+    transform: none;
     gap: 10px;
   }
 
   .zoom-buttons-container.with-controls-open {
-    top: 42%;
+    bottom: 180px;
   }
 
   .zoom-btn {
@@ -1655,15 +1773,15 @@ h1 {
 
 @media (max-width: 420px) {
   .zoom-buttons-container {
-    right: 20px;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
+    right: 12px;
+    top: auto;
+    bottom: 84px;
+    transform: none;
     gap: 8px;
   }
 
   .zoom-buttons-container.with-controls-open {
-    top: 43%;
+    bottom: 170px;
   }
 
   .zoom-btn {
