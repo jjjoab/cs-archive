@@ -13,6 +13,13 @@ import searchIndex from './utils/search';
 // Vite glob import for corsica test posters
 const corsicaFiles = import.meta.glob('/src/assets/corsica test posters/*.{webp,jpg,jpeg,png}', { eager: true });
 
+const stripImageExtension = (fileName: string) => fileName.replace(/\.(webp|jpg|jpeg|png)$/i, '');
+
+const datesDataByStem = Object.entries(datesData).reduce((acc, [fileName, value]) => {
+  acc[stripImageExtension(fileName)] = value;
+  return acc;
+}, {} as Record<string, (typeof datesData)[keyof typeof datesData]>);
+
 interface ImageData {
   src: string;
   fileName: string;
@@ -86,7 +93,7 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
     const data = Object.entries(corsicaFiles)
       .map(([path, mod]: any) => {
         const fileName = path.split('/').pop()!;
-        const fileData = datesData[fileName as keyof typeof datesData];
+        const fileData = datesDataByStem[stripImageExtension(fileName)];
         const dateStr = typeof fileData === 'string' ? fileData : fileData?.date || '2020-01-01';
         const eventName = typeof fileData === 'string' ? `event${Math.random()}` : fileData?.event || 'unknown';
         const timestamp = new Date(dateStr).getTime();
