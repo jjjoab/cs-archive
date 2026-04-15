@@ -106,8 +106,8 @@
 
 .corsica-grid-controls {
   position: fixed;
-  bottom: 108px;
-  right: 28px;
+  top: 78px;
+  right: 16px;
   display: flex;
   flex-direction: column;
   gap: var(--side-buttons-gap);
@@ -120,25 +120,25 @@
 }
 
 .corsica-grid-controls.with-player-open {
-  bottom: 160px;
+  top: 78px;
 }
 
 .controls-menu-btn {
   position: fixed;
-  bottom: 16px;
+  top: calc(var(--header-height) - 20px);
   right: 16px;
   z-index: 3001;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border: none;
   background: transparent;
   padding: 0;
-  transition: all 0.2s ease, bottom 0.35s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .controls-menu-btn.with-player-open {
-  bottom: 112px;
+  top: calc(var(--header-height) - 8px);
 }
 
 .controls-menu-btn:hover {
@@ -150,27 +150,14 @@
 }
 
 .controls-menu-btn img {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
   display: block;
   object-fit: contain;
 }
 
 .stack-toggle-btn {
-  position: fixed;
-  top: calc(var(--header-height) + 8px);
-  right: 20px;
-  width: 42px;
-  height: 42px;
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  z-index: 3002;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: none;
 }
 
 .stack-toggle-btn img {
@@ -229,25 +216,25 @@
   }
 
   .controls-menu-btn {
-    bottom: 16px;
+    top: calc(var(--header-height) - 8px);
     right: 16px;
   }
 
   .controls-menu-btn.with-player-open {
-    bottom: 112px;
+    top: calc(var(--header-height) - 8px);
   }
 
   .corsica-grid-controls {
-    bottom: 64px;
-    right: 12px;
+    top: 78px;
+    right: 16px;
   }
 
   .corsica-grid-controls.with-player-open {
-    bottom: 100px;
+    top: 78px;
   }
 
   .stack-toggle-btn {
-    right: 20px;
+    display: none;
   }
 }
 
@@ -277,18 +264,17 @@
   }
 
   .controls-menu-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
   }
 
   .controls-menu-btn img {
-    width: 33px;
-    height: 33px;
+    width: 26px;
+    height: 26px;
   }
 
   .stack-toggle-btn {
-    width: 40px;
-    height: 40px;
+    display: none;
   }
 
   .stack-toggle-btn img {
@@ -357,7 +343,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: #171717;
+  background: #101010;
   z-index: 0;
 }
 
@@ -410,7 +396,7 @@
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: #171717;
+  background: #101010;
   z-index: 20000;
   overflow: hidden;
   display: flex;
@@ -449,7 +435,7 @@
 .loading-intro-black {
   position: absolute;
   inset: 0;
-  background: #171717;
+  background: #101010;
   opacity: 1;
   transition: opacity 0.8s ease;
   z-index: 20003;
@@ -463,7 +449,7 @@
 .loading-blackout {
   position: absolute;
   inset: 0;
-  background: #171717;
+  background: #101010;
   opacity: 0;
   transition: opacity 1.2s ease;
   z-index: 20001;
@@ -505,7 +491,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(23, 23, 23, 0.9);
+  background-color: rgba(12, 12, 12, 0.9);
   z-index: 13050;
   display: flex;
   align-items: center;
@@ -541,7 +527,7 @@
   gap: 24px;
   cursor: pointer;
   margin-left: 0;
-  background: #1a1a1a;
+  background: #111111;
   padding: 16px;
   border-radius: 6px;
 }
@@ -594,12 +580,14 @@
 .modal-date {
   font-size: 16px;
   color: #ccc;
+  font-weight: 600;
 }
 
 .modal-details {
   margin-top: 12px;
   font-size: 14px;
   color: #aaa;
+  font-weight: 600;
   line-height: 1.5;
 }
 
@@ -647,12 +635,13 @@
   font-size: 14px;
   color: #aaa;
   font-family: 'PPMori', sans-serif;
+  font-weight: 600;
 }
 
 .timeline-details {
   margin-top: 8px;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: 600;
   color: #aaa;
   line-height: 1.4;
   white-space: normal;
@@ -812,18 +801,24 @@
 .archive-header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
 }
 
 .archive-title-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
   color: inherit;
+}
+
+.archive-title {
+  font-size: 15px;
+  letter-spacing: 0.6px;
+  line-height: 1;
 }
 
 .archive-title-arrow {
@@ -926,11 +921,11 @@
   pointer-events: none;
 }
 .search-placeholder.visible { opacity: 0.75; transform: translateY(0); }
-.search-input-wrap { display: inline-flex; align-items: center; }
+.search-input-wrap { display: inline-flex; align-items: center; position: relative; }
 .search-input {
   width: 320px;
   max-width: calc(100vw - 160px);
-  padding: 8px 10px;
+  padding: 8px 34px 8px 10px;
   border-radius: 6px;
   border: 1px solid rgba(255,255,255,0.08);
   background: rgba(0,0,0,0.5);
@@ -939,6 +934,39 @@
   transition: box-shadow 150ms ease;
 }
 .search-input:focus { box-shadow: 0 4px 18px rgba(0,0,0,0.4); }
+
+.search-close-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.search-close-btn span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  width: 18px;
+  height: 2px;
+  margin: -1px auto 0;
+  background: #ffffff;
+  transform-origin: center;
+}
+
+.search-close-btn span:first-child {
+  transform: rotate(45deg);
+}
+
+.search-close-btn span:last-child {
+  transform: rotate(-45deg);
+}
 
 .archive-mobile-menu-btn {
   display: none;
@@ -1190,6 +1218,7 @@
   font-family: 'PPMori', sans-serif;
   font-size: 34px;
   color: #ffffff;
+  font-weight: 600;
   margin: 0 0 0 0;
   padding: 0 0 8px 0;
   cursor: pointer;
@@ -1316,12 +1345,12 @@
 @media (max-width: 768px) {
   .controls-menu-btn {
     right: 16px;
-    bottom: 16px;
+    top: calc(var(--header-height) - 8px);
   }
 
   .corsica-grid-controls {
     right: 22px;
-    bottom: 138px;
+    top: 78px;
   }
 
   .index-list-container {
@@ -1368,11 +1397,11 @@
 @media (max-width: 420px) {
   .controls-menu-btn {
     right: 16px;
-    bottom: 16px;
+    top: calc(var(--header-height) - 8px);
   }
 
   .corsica-grid-controls {
     right: 14px;
-    bottom: 130px;
+    top: 78px;
   }
 }

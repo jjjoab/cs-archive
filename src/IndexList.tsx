@@ -3,9 +3,6 @@ import indexText from './assets/CORSICA_STUDIOS_INDEX.txt?raw';
 import './App.css';
 import { useSearch } from './contexts/SearchContext';
 import searchIndex from './utils/search';
-import indexArtIcon from './assets/icons/index-art.png';
-import indexTextIcon from './assets/icons/index-text.png';
-import indexTimelineIcon from './assets/icons/index-timeline.png';
 import controlsMenuIcon from './assets/icons/galleryswitch.png';
 import playIcon from './assets/icons/play.png';
 import EventModal, { type EventModalData } from './components/EventModal';
@@ -23,6 +20,7 @@ interface IndexEntry {
 interface IndexListProps {
   onShowIndexRegular?: () => void;
   onShowTimeline?: () => void;
+  onNextView?: () => void;
   onVisibleCountChange?: (count: number) => void;
 }
 
@@ -124,7 +122,7 @@ function buildPosterMaps() {
   return { byKey, byDate };
 }
 
-export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibleCountChange }: IndexListProps) {
+export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextView, onVisibleCountChange }: IndexListProps) {
   const [entries, setEntries] = useState<IndexEntry[]>([]);
   const [showRightIcons, setShowRightIcons] = useState(false);
   const [filteredEntries, setFilteredEntries] = useState<IndexEntry[]>([]);
@@ -251,14 +249,14 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibl
           aria-label="Go to archive art view"
           onClick={onShowIndexRegular}
         >
-          <img src={indexArtIcon} alt="Archive art" />
+          <img src={controlsMenuIcon} alt="Archive art" />
         </button>
       )}
 
       <button
-        onClick={() => setShowRightIcons((prev) => !prev)}
+        onClick={() => onNextView?.()}
         className={`toggle-view-btn controls-menu-btn ${showRightIcons ? 'active' : ''}`}
-        aria-label="Toggle right-side controls"
+        aria-label="Toggle view"
       >
         <img src={controlsMenuIcon} alt="Controls" />
       </button>
@@ -270,7 +268,7 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibl
             aria-label="Index List view"
             onClick={() => closeControlsAfter()}
           >
-            <img src={indexTextIcon} alt="INDEX(LIST)" />
+            <img src={controlsMenuIcon} alt="INDEX(LIST)" />
           </button>
 
           {onShowIndexRegular && (
@@ -278,7 +276,7 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibl
               onClick={() => closeControlsAfter(onShowIndexRegular)}
               className="toggle-view-btn"
             >
-              <img src={indexArtIcon} alt="Index" />
+              <img src={controlsMenuIcon} alt="Index" />
             </button>
           )}
 
@@ -287,7 +285,7 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibl
               onClick={() => closeControlsAfter(onShowTimeline)}
               className="toggle-view-btn"
             >
-              <img src={indexTimelineIcon} alt="Timeline" />
+              <img src={controlsMenuIcon} alt="Timeline" />
             </button>
           )}
         </div>

@@ -41,6 +41,16 @@ const SearchBar: React.FC = () => {
             onBlur={() => setActive(false)}
             aria-label="Search index"
           />
+          <button
+            type="button"
+            className="search-close-btn"
+            aria-label="Close search"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setActive(false)}
+          >
+            <span />
+            <span />
+          </button>
         </div>
       )}
     </div>

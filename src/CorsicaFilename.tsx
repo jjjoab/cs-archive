@@ -1,8 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import playIcon from './assets/icons/play.png';
-import indexTextIcon from './assets/icons/index-text.png';
-import indexArtIcon from './assets/icons/index-art.png';
-import indexTimelineIcon from './assets/icons/index-timeline.png';
 import controlsMenuIcon from './assets/icons/galleryswitch.png';
 import EventModal from './components/EventModal';
 import AudioPlayer from './components/AudioPlayer';
@@ -45,13 +42,14 @@ interface ParsedDate {
 interface CorsicaFilenameProps {
   onShowIndexList?: () => void;
   onShowIndexRegular?: () => void;
+  onNextView?: () => void;
   isHorizontalScroll?: boolean;
   setIsHorizontalScroll?: (value: boolean) => void;
   initialTimeline?: boolean;
   onVisibleCountChange?: (count: number) => void;
 }
 
-const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, initialTimeline = false, onVisibleCountChange }) => {
+const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onShowIndexRegular, onNextView, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, initialTimeline = false, onVisibleCountChange }) => {
   const [corsicaData, setCorsicaData] = useState<ImageData[]>([]);
   const [isTimeline, setIsTimeline] = useState(initialTimeline);
   const [desiredTimelineTimestamp, setDesiredTimelineTimestamp] = useState<number | null>(null);
@@ -74,6 +72,10 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
   const indexPinchAccumulatedDeltaRef = useRef(0);
   const indexWheelAccumulatedRef = useRef(0);
   const [viewportBounds, setViewportBounds] = useState({ top: 0, bottom: 0, width: window.innerWidth });
+  const [hasTouchLikeInput, setHasTouchLikeInput] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  });
   const [activeCenterByYear, setActiveCenterByYear] = useState<Record<string, number>>({});
   
   // Use prop if provided, otherwise use local state
@@ -519,8 +521,18 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
   }, []);
 
   const isMobileViewport = viewportBounds.width <= 768;
+  const isPhoneLikeViewport = isMobileViewport && hasTouchLikeInput;
   const effectiveTimelineZoom = 1;
   const { activeMix } = useAudio();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const media = window.matchMedia('(hover: none), (pointer: coarse)');
+    const syncInputMode = () => setHasTouchLikeInput(media.matches);
+    syncInputMode();
+    media.addEventListener('change', syncInputMode);
+    return () => media.removeEventListener('change', syncInputMode);
+  }, []);
 
   // Scroll to mid 2025 when timeline first loads
   useEffect(() => {
@@ -748,9 +760,9 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
     <div className="corsica-grid-container" ref={containerRef} onWheel={handleWheelZoom}>
       <AudioPlayer />
       <button
-        onClick={() => setShowRightIcons((prev) => !prev)}
+        onClick={() => onNextView?.()}
         className={`toggle-view-btn controls-menu-btn ${showRightIcons ? 'active' : ''} ${activeMix ? 'with-player-open' : ''}`}
-        aria-label="Toggle right-side controls"
+        aria-label="Toggle view"
       >
         <img src={controlsMenuIcon} alt="Controls" />
       </button>
@@ -764,20 +776,20 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
               })}
               className="toggle-view-btn"
             >
-              <img src={indexTextIcon} alt="INDEX(LIST)" />
+              <img src={controlsMenuIcon} alt="INDEX(LIST)" />
             </button>
           )}
           <button
             onClick={() => closeControlsAfter(() => setIsTimeline(false))}
             className={`toggle-view-btn ${!isTimeline ? 'active' : ''}`}
           >
-            <img src={indexArtIcon} alt="Index" />
+            <img src={controlsMenuIcon} alt="Index" />
           </button>
           <button
             onClick={() => closeControlsAfter(() => setIsTimeline(true))}
             className={`toggle-view-btn ${isTimeline ? 'active' : ''}`}
           >
-            <img src={indexTimelineIcon} alt="Timeline" />
+            <img src={controlsMenuIcon} alt="Timeline" />
           </button>
         </div>
       </div>
@@ -815,7 +827,7 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
           className={`stack-toggle-btn ${isTimeline ? 'active' : ''}`}
           aria-label={isTimeline ? 'Go to index list' : 'Go to timeline view'}
         >
-          <img src={isTimeline ? indexTextIcon : indexTimelineIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
+          <img src={controlsMenuIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
         </button>
       )}
       {debouncedQuery && (
@@ -913,7 +925,7 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
             );
           })}
         </div>
-        {hoveredItem && !isMobileViewport && (
+        {hoveredItem && !isPhoneLikeViewport && (
           <div className="timeline-hover-panel">
             <div className="timeline-hover-event">{hoveredItem.event}</div>
             {hoveredItem.details && (

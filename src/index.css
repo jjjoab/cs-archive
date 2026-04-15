@@ -59,7 +59,7 @@
 
 @media (max-width: 768px) {
   .archive-header {
-    background: #171717;
+    background: #101010;
   }
 }
 
@@ -71,6 +71,16 @@
   font-weight: normal;
   letter-spacing: 1px;
   text-transform: uppercase;
+}
+
+.archive-top-menu-label,
+.archive-mobile-menu-btn,
+.index-year-label,
+.timeline-year-marker span,
+.timeline-sticky-year span,
+.timeline-hover-event,
+.zoom-value {
+  font-weight: 600;
 }
 
 .view-mode-fixed-toggle {
@@ -141,7 +151,7 @@
 }
 
 body {
-  background-color:  #171717;
+  background-color:  #101010;
   color: white;
   margin: 0;
   font-family: 'PPMori', sans-serif;
@@ -165,7 +175,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 20000;
-  background: #171717;
+  background: #101010;
   color: #ffffff;
   --landing-type-size: clamp(1.55rem, 3.6vw, 2.7rem);
   --landing-row-gap: 2px;
@@ -422,7 +432,7 @@ body {
   padding-left: 60px;
   padding-bottom: 60px;
   color: white;
-  background-color: #171717;
+  background-color: #101010;
   box-sizing: border-box;
 }
 
@@ -519,7 +529,7 @@ body {
   height: auto;
   object-fit: cover;
   display: block;
-  background: #171717;
+  background: #101010;
   border: none;
 }
 .book-grid {
@@ -1411,6 +1421,13 @@ h1 {
   --timeline-line-x: 8%;
 }
 
+/* Lock timeline line at 810px and above */
+@media (min-width: 810px) {
+  .timeline {
+    --timeline-line-x: 65px;
+  }
+}
+
 .timeline::before {
   content: '';
   position: absolute;
@@ -1529,9 +1546,9 @@ h1 {
 /* Mobile: center the year label between the left edge and the timeline line */
 @media (max-width: 768px) {
   .timeline-year-marker {
-    left: calc(var(--timeline-line-x) / 2);
-    transform: translate(-50%, -50%);
-    text-align: center;
+    left: calc(var(--timeline-line-x) + 10px);
+    transform: translateY(-50%);
+    text-align: left;
     padding-right: 0;
   }
 
@@ -1579,6 +1596,13 @@ h1 {
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
   filter: brightness(1);
+}
+
+/* Scale image width responsively at 810px and above to maintain 2:1 visual ratio */
+@media (min-width: 810px) {
+  .timeline-image img {
+    width: clamp(18%, (100vw - 130px) * 0.25, 45%);
+  }
 }
 
 .timeline-image img:hover {
@@ -1754,7 +1778,7 @@ h1 {
   }
 
   .timeline {
-    --timeline-line-x: 24px;
+    --timeline-line-x: clamp(24px, 8vw, 64px);
   }
 
   .timeline-item {
@@ -1774,16 +1798,16 @@ h1 {
   }
 
   .timeline-content {
-    left: 42px;
-    width: calc(100% - 54px);
+    left: calc(var(--timeline-line-x) + 18px);
+    width: calc(100% - var(--timeline-line-x) - 30px);
     padding-right: 12px;
     align-items: flex-start;
   }
 
   .timeline-year-marker {
-    left: calc(var(--timeline-line-x) / 2);
-    transform: translate(-50%, -50%);
-    text-align: center;
+    left: calc(var(--timeline-line-x) + 10px);
+    transform: translateY(-50%);
+    text-align: left;
     padding-right: 0;
   }
 
@@ -1796,9 +1820,10 @@ h1 {
 
   .timeline-sticky-year {
     display: block;
-    left: 12px;
+    left: calc(var(--timeline-line-x) + 10px);
     top: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateY(-50%);
+    text-align: left;
   }
 
   .timeline-image img {
@@ -1894,7 +1919,7 @@ h1 {
    minimum if the header width changes. */
 @media (min-width: 769px) {
   .timeline {
-    --timeline-line-x: clamp(160px, calc(8% - 100px), 24%);
+    --timeline-line-x: clamp(56px, 8vw, 160px);
   }
 }
 
@@ -1902,9 +1927,9 @@ h1 {
 @media (max-width: 768px) {
   /* Center year label between edge and timeline line */
   .timeline-year-marker {
-    left: calc(var(--timeline-line-x) / 2);
-    transform: translate(-50%, -50%);
-    text-align: center;
+    left: calc(var(--timeline-line-x) + 10px);
+    transform: translateY(-50%);
+    text-align: left;
     padding-right: 0;
   }
 

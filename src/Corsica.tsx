@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import icon1 from './assets/icons/timelineicon1.png';
 import icon2 from './assets/icons/timelineicon2.png';
-import indexTextIcon from './assets/icons/index-text.png';
-import indexArtIcon from './assets/icons/index-art.png';
-import indexTimelineIcon from './assets/icons/index-timeline.png';
 import controlsMenuIcon from './assets/icons/galleryswitch.png';
 import datesData from './assets/corsica test posters/dates.json';
 import AudioPlayer from './components/AudioPlayer';
@@ -31,12 +28,13 @@ interface ImageData {
 interface CorsicaProps {
   onShowIndexList?: () => void;
   onShowIndexRegular?: () => void;
+  onNextView?: () => void;
   isHorizontalScroll?: boolean;
   setIsHorizontalScroll?: (value: boolean) => void;
   onVisibleCountChange?: (count: number) => void;
 }
 
-const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, onVisibleCountChange }) => {
+const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, onNextView, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, onVisibleCountChange }) => {
   const zoomLevels = [2.5, 5, 7.5, 10, 12.5, 15]; // 250%, 500%, 750%, 1000%, 1250%, 1500%
   const [corsicaData, setCorsicaData] = useState<ImageData[]>([]);
   const [isTimeline, setIsTimeline] = useState(false);
@@ -49,7 +47,6 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [iconToggle, setIconToggle] = useState(false);
-  const [showRightIcons, setShowRightIcons] = useState(false);
   const [localIsHorizontalScroll] = useState(false);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -220,34 +217,34 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
     <div className="corsica-grid-container">
       <AudioPlayer />
       <button
-        onClick={() => setShowRightIcons((prev) => !prev)}
-        className={`toggle-view-btn controls-menu-btn ${showRightIcons ? 'active' : ''}`}
-        aria-label="Toggle right-side controls"
+        onClick={() => onNextView?.()}
+        className="toggle-view-btn controls-menu-btn"
+        aria-label="Toggle view"
       >
         <img src={controlsMenuIcon} alt="Controls" />
       </button>
 
       <div className="corsica-grid-controls">
-        <div className={`controls-icons-stack ${showRightIcons ? 'show' : ''}`}>
+        <div className="controls-icons-stack">
           {onShowIndexList && (
             <button
               onClick={onShowIndexList}
               className="toggle-view-btn"
             >
-              <img src={indexTextIcon} alt="INDEX(LIST)" />
+              <img src={controlsMenuIcon} alt="INDEX(LIST)" />
             </button>
           )}
           <button
             onClick={() => setIsTimeline(false)}
             className={`toggle-view-btn ${!isTimeline ? 'active' : ''}`}
           >
-            <img src={indexArtIcon} alt="Index" />
+            <img src={controlsMenuIcon} alt="Index" />
           </button>
           <button
             onClick={() => setIsTimeline(true)}
             className={`toggle-view-btn ${isTimeline ? 'active' : ''}`}
           >
-            <img src={indexTimelineIcon} alt="Timeline" />
+            <img src={controlsMenuIcon} alt="Timeline" />
           </button>
           {setIsHorizontalScroll && (
             <button
@@ -286,7 +283,7 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
               className={`toggle-view-btn ${isTimeline ? 'active' : ''}`}
               aria-label={isTimeline ? 'Go to index list' : 'Go to timeline view'}
             >
-              <img src={isTimeline ? indexTextIcon : indexTimelineIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
+              <img src={controlsMenuIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
             </button>
           )}
         </div>
@@ -480,7 +477,7 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
             height: `calc(100vh - var(--header-height))`,
             width: '36vw',
             maxWidth: '520px',
-            background: '#0f0f0f',
+            background: '#0a0a0a',
             boxShadow: '0 0 40px rgba(0,0,0,0.6)',
             zIndex: 12000,
             padding: 18,

@@ -52,6 +52,21 @@ const App: React.FC = () => {
     setIsArchiveMenuOpen(false);
   };
 
+  const handleNextView = () => {
+    if (view === 'filename' && !openFilenameInTimeline) {
+      // filename (default) → list
+      setView('list');
+    } else if (view === 'list') {
+      // list → filename (timeline)
+      setView('filename');
+      setOpenFilenameInTimeline(true);
+    } else if (view === 'filename' && openFilenameInTimeline) {
+      // filename (timeline) → filename (default)
+      setView('filename');
+      setOpenFilenameInTimeline(false);
+    }
+  };
+
   return (
     <>
     <SearchProvider>
@@ -178,6 +193,7 @@ const App: React.FC = () => {
               setOpenFilenameInTimeline(true);
               setView('filename');
             }}
+            onNextView={handleNextView}
             onVisibleCountChange={setVisibleImageCount}
           />
         ) : view === 'filename' ? (
@@ -188,6 +204,7 @@ const App: React.FC = () => {
               setOpenFilenameInTimeline(false);
               setView('filename');
             }}
+            onNextView={handleNextView}
             isHorizontalScroll={isHorizontalScroll}
             setIsHorizontalScroll={setIsHorizontalScroll}
             initialTimeline={openFilenameInTimeline}
@@ -198,6 +215,7 @@ const App: React.FC = () => {
             source="json"
             onShowIndexList={() => setView('list')}
             onShowIndexRegular={() => setView('filename')}
+            onNextView={handleNextView}
             isHorizontalScroll={isHorizontalScroll}
             setIsHorizontalScroll={setIsHorizontalScroll}
             onVisibleCountChange={setVisibleImageCount}
