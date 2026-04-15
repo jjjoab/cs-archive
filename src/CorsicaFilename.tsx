@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import icon1 from './assets/icons/timelineicon1.png';
-import icon2 from './assets/icons/timelineicon2.png';
 import playIcon from './assets/icons/play.png';
 import indexTextIcon from './assets/icons/index-text.png';
 import indexArtIcon from './assets/icons/index-art.png';
