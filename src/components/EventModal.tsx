@@ -182,6 +182,14 @@ const EventModal: React.FC<EventModalProps> = ({
 	return (
 		<div className={`image-modal${isClosing ? ' closing' : ''}`} onClick={() => triggerClose()}>
 			<div className="modal-content" onClick={(event) => event.stopPropagation()}>
+				<button
+					type="button"
+					className="modal-close-btn"
+					onClick={() => triggerClose()}
+					aria-label="Close preview"
+				>
+					×
+				</button>
 				{selectedImage.src && (
 					<img src={selectedImage.src} alt={selectedImage.fileName || selectedImage.event} />
 				)}

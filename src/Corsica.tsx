@@ -33,15 +33,16 @@ interface CorsicaProps {
   onShowIndexRegular?: () => void;
   isHorizontalScroll?: boolean;
   setIsHorizontalScroll?: (value: boolean) => void;
+  onVisibleCountChange?: (count: number) => void;
 }
 
-const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll }) => {
+const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, onVisibleCountChange }) => {
   const zoomLevels = [2.5, 5, 7.5, 10, 12.5, 15]; // 250%, 500%, 750%, 1000%, 1250%, 1500%
   const [corsicaData, setCorsicaData] = useState<ImageData[]>([]);
   const [isTimeline, setIsTimeline] = useState(false);
   const [desiredTimelineTimestamp, setDesiredTimelineTimestamp] = useState<number | null>(null);
   const [zoomIndex, setZoomIndex] = useState(2); // Default zoom to 750%
-  const [gridColumns, setGridColumns] = useState(6);
+  const [gridColumns, setGridColumns] = useState(() => (typeof window !== 'undefined' && window.innerWidth <= 768 ? 3 : 6));
   const [rowSize, setRowSize] = useState(200); // Default row height for horizontal scroll
   const [timelineStats, setTimelineStats] = useState({ min: 0, max: 0, range: 0 });
   const [baseZoom, setBaseZoom] = useState(0.01);
@@ -133,6 +134,10 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
   };
 
   const visibleData = debouncedQuery ? searchIndex(corsicaData, debouncedQuery, ['event', 'details', 'fileName', 'date']) : corsicaData;
+
+  useEffect(() => {
+    onVisibleCountChange?.(visibleData.length);
+  }, [visibleData.length, onVisibleCountChange]);
 
   const indexGroups = [...visibleData]
     .sort((a, b) => b.timestamp - a.timestamp)
@@ -272,14 +277,16 @@ const Corsica: React.FC<CorsicaProps> = ({ onShowIndexList, onShowIndexRegular, 
                   })();
                   setDesiredTimelineTimestamp(centerTimestamp ?? null);
                   setIsTimeline(true);
+                } else if (onShowIndexList) {
+                  onShowIndexList();
                 } else {
                   setIsTimeline(false);
                 }
               }}
               className={`toggle-view-btn ${isTimeline ? 'active' : ''}`}
-              aria-label="Toggle timeline view"
+              aria-label={isTimeline ? 'Go to index list' : 'Go to timeline view'}
             >
-              <img src={isTimeline ? icon2 : icon1} alt="Toggle timeline" />
+              <img src={isTimeline ? indexTextIcon : indexTimelineIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
             </button>
           )}
         </div>

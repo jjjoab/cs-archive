@@ -10,6 +10,7 @@ interface CorsicaNewProps {
   isHorizontalScroll?: boolean;
   setIsHorizontalScroll?: (value: boolean) => void;
   initialTimeline?: boolean;
+  onVisibleCountChange?: (count: number) => void;
 }
 
 const CorsicaNew: React.FC<CorsicaNewProps> = ({
@@ -19,6 +20,7 @@ const CorsicaNew: React.FC<CorsicaNewProps> = ({
   isHorizontalScroll,
   setIsHorizontalScroll,
   initialTimeline = false,
+  onVisibleCountChange,
 }) => {
   if (source === 'json') {
     return (
@@ -27,6 +29,7 @@ const CorsicaNew: React.FC<CorsicaNewProps> = ({
         onShowIndexRegular={onShowIndexRegular}
         isHorizontalScroll={isHorizontalScroll}
         setIsHorizontalScroll={setIsHorizontalScroll}
+        onVisibleCountChange={onVisibleCountChange}
       />
     );
   }
@@ -38,6 +41,7 @@ const CorsicaNew: React.FC<CorsicaNewProps> = ({
       isHorizontalScroll={isHorizontalScroll}
       setIsHorizontalScroll={setIsHorizontalScroll}
       initialTimeline={initialTimeline}
+      onVisibleCountChange={onVisibleCountChange}
     />
   );
 };

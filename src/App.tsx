@@ -10,6 +10,7 @@ import headerLogo from './assets/icons/corsica logo white small.png';
 
 // Toggle between loading screens: 'images' or 'video'
 const LOADING_SCREEN_TYPE: 'images' | 'video' = 'video';
+const ARCHIVE_YEAR = new Date().getFullYear();
 
 const App: React.FC = () => {
   const [view, setView] = useState<'json' | 'filename' | 'list'>('filename');
@@ -17,6 +18,9 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isHorizontalScroll, setIsHorizontalScroll] = useState(false);
   const [openFilenameInTimeline, setOpenFilenameInTimeline] = useState(false);
+  const [visibleImageCount, setVisibleImageCount] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isArchiveMenuOpen, setIsArchiveMenuOpen] = useState(false);
   const useVideoLoadingScreen = LOADING_SCREEN_TYPE === 'video' && window.innerWidth > 768;
 
   const ActiveLoadingScreen = useVideoLoadingScreen ? LoadingScreen : LoadingScreen;
@@ -24,6 +28,28 @@ const App: React.FC = () => {
   const handleEnterArchive = () => {
     setHasEnteredArchive(true);
     setIsLoading(true);
+    setIsMobileMenuOpen(false);
+    setIsArchiveMenuOpen(false);
+  };
+
+  const handleReturnToLanding = () => {
+    setHasEnteredArchive(false);
+    setIsLoading(false);
+    setIsMobileMenuOpen(false);
+    setIsArchiveMenuOpen(false);
+  };
+
+  const handleShowArchiveArt = () => {
+    setView('filename');
+    setTimeout(() => setOpenFilenameInTimeline(false), 0);
+    setIsMobileMenuOpen(false);
+    setIsArchiveMenuOpen(false);
+  };
+
+  const handleShowGalleryList = () => {
+    setView('list');
+    setIsMobileMenuOpen(false);
+    setIsArchiveMenuOpen(false);
   };
 
   return (
@@ -36,19 +62,87 @@ const App: React.FC = () => {
         <>
       {isLoading && <ActiveLoadingScreen onComplete={() => setIsLoading(false)} />}
       <div className="archive-header">
+        <div className="archive-header-left">
         <div
           role="button"
           tabIndex={0}
-          aria-label="Go to index art"
-          onClick={() => { setView('filename'); setTimeout(() => setOpenFilenameInTimeline(false), 0); }}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setView('filename'); setTimeout(() => setOpenFilenameInTimeline(false), 0); } }}
-          style={{ display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}
+          aria-label="Go to landing page"
+          onClick={handleReturnToLanding}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleReturnToLanding(); } }}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
         >
           <img src={headerLogo} alt="Archive logo" style={{ height: '26px', width: 'auto', display: 'block' }} />
-          <div className="archive-title">ARCHIVE</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button
+          type="button"
+          className={`archive-title-trigger ${isArchiveMenuOpen ? 'active' : ''}`}
+          aria-label="Toggle archive menu"
+          aria-expanded={isArchiveMenuOpen}
+          onClick={() => {
+            setIsArchiveMenuOpen((prev) => !prev);
+            setIsMobileMenuOpen(false);
+          }}
+        >
+          <span className="archive-title">ARCHIVE</span>
+          <span className="archive-title-arrow" aria-hidden="true">↓</span>
+        </button>
+        </div>
+        <div className="archive-header-actions">
           <SearchBar />
+          <button
+            type="button"
+            className={`archive-mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => {
+              setIsMobileMenuOpen((prev) => !prev);
+              setIsArchiveMenuOpen(false);
+            }}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </div>
+      <div className={`archive-top-menu ${isArchiveMenuOpen ? 'open' : ''}`}>
+        <button type="button" className="archive-top-menu-row" onClick={handleShowArchiveArt}>
+          <span className="archive-top-menu-label">ARCHIVE</span>
+        </button>
+        <button type="button" className="archive-top-menu-row" onClick={handleShowGalleryList}>
+          <span className="archive-top-menu-label">GALLERY</span>
+        </button>
+        <a
+          href="https://everpress.com/profile/corsica-studios"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="archive-top-menu-row"
+          onClick={() => setIsArchiveMenuOpen(false)}
+        >
+          <span className="archive-top-menu-label">MERCH</span>
+        </a>
+        <div className="archive-top-menu-row" aria-disabled="true">
+          <span className="archive-top-menu-label">RECORDINGS</span>
+        </div>
+      </div>
+      <div className={`archive-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        <button type="button" className="archive-mobile-menu-row" onClick={handleShowArchiveArt}>
+          <span className="archive-mobile-menu-label">ARCHIVE</span>
+        </button>
+        <button type="button" className="archive-mobile-menu-row" onClick={handleShowGalleryList}>
+          <span className="archive-mobile-menu-label">GALLERY</span>
+        </button>
+        <a
+          href="https://everpress.com/profile/corsica-studios"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="archive-mobile-menu-row"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <span className="archive-mobile-menu-label">MERCH</span>
+        </a>
+        <div className="archive-mobile-menu-row" aria-disabled="true">
+          <span className="archive-mobile-menu-label">RECORDINGS</span>
         </div>
       </div>
       <div className="main-content" style={{ display: isLoading ? 'none' : 'block' }}>
@@ -84,6 +178,7 @@ const App: React.FC = () => {
               setOpenFilenameInTimeline(true);
               setView('filename');
             }}
+            onVisibleCountChange={setVisibleImageCount}
           />
         ) : view === 'filename' ? (
           <CorsicaNew
@@ -96,6 +191,7 @@ const App: React.FC = () => {
             isHorizontalScroll={isHorizontalScroll}
             setIsHorizontalScroll={setIsHorizontalScroll}
             initialTimeline={openFilenameInTimeline}
+            onVisibleCountChange={setVisibleImageCount}
           />
         ) : (
           <CorsicaNew
@@ -104,10 +200,11 @@ const App: React.FC = () => {
             onShowIndexRegular={() => setView('filename')}
             isHorizontalScroll={isHorizontalScroll}
             setIsHorizontalScroll={setIsHorizontalScroll}
+            onVisibleCountChange={setVisibleImageCount}
           />
         )}
       </div>
-      <div className="site-footer">Corsicastudios.com | @Corsicastudios</div>
+      <div className="site-footer">Corsicastudios.com | @Corsicastudios | {visibleImageCount} images | {ARCHIVE_YEAR}</div>
         </>
       )}
     </AudioProvider>

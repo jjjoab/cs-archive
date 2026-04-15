@@ -23,6 +23,7 @@ interface IndexEntry {
 interface IndexListProps {
   onShowIndexRegular?: () => void;
   onShowTimeline?: () => void;
+  onVisibleCountChange?: (count: number) => void;
 }
 
 // Import all poster images
@@ -123,7 +124,7 @@ function buildPosterMaps() {
   return { byKey, byDate };
 }
 
-export default function IndexList({ onShowIndexRegular, onShowTimeline }: IndexListProps) {
+export default function IndexList({ onShowIndexRegular, onShowTimeline, onVisibleCountChange }: IndexListProps) {
   const [entries, setEntries] = useState<IndexEntry[]>([]);
   const [showRightIcons, setShowRightIcons] = useState(false);
   const [filteredEntries, setFilteredEntries] = useState<IndexEntry[]>([]);
@@ -194,6 +195,10 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline }: IndexL
 
   const displayedEntries = filteredEntries;
 
+  useEffect(() => {
+    onVisibleCountChange?.(displayedEntries.length);
+  }, [displayedEntries.length, onVisibleCountChange]);
+
   // Group by year and month
   const groupedByYear: { [year: number]: { [month: number]: IndexEntry[] } } = {};
   displayedEntries.forEach(entry => {
@@ -239,6 +244,17 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline }: IndexL
 
   return (
     <div className="index-list-container">
+      {onShowIndexRegular && (
+        <button
+          type="button"
+          className="stack-toggle-btn active"
+          aria-label="Go to archive art view"
+          onClick={onShowIndexRegular}
+        >
+          <img src={indexArtIcon} alt="Archive art" />
+        </button>
+      )}
+
       <button
         onClick={() => setShowRightIcons((prev) => !prev)}
         className={`toggle-view-btn controls-menu-btn ${showRightIcons ? 'active' : ''}`}

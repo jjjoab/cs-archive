@@ -50,9 +50,10 @@ interface CorsicaFilenameProps {
   isHorizontalScroll?: boolean;
   setIsHorizontalScroll?: (value: boolean) => void;
   initialTimeline?: boolean;
+  onVisibleCountChange?: (count: number) => void;
 }
 
-const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, initialTimeline = false }) => {
+const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onShowIndexRegular, isHorizontalScroll: propIsHorizontalScroll, setIsHorizontalScroll, initialTimeline = false, onVisibleCountChange }) => {
   const [corsicaData, setCorsicaData] = useState<ImageData[]>([]);
   const [isTimeline, setIsTimeline] = useState(initialTimeline);
   const [desiredTimelineTimestamp, setDesiredTimelineTimestamp] = useState<number | null>(null);
@@ -60,7 +61,7 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
   useEffect(() => {
     setIsTimeline(initialTimeline);
   }, [initialTimeline]);
-  const [gridColumns, setGridColumns] = useState(6);
+  const [gridColumns, setGridColumns] = useState(() => (typeof window !== 'undefined' && window.innerWidth <= 768 ? 3 : 6));
   const [rowSize, setRowSize] = useState(200); // Default row height for horizontal scroll
   const [timelineStats, setTimelineStats] = useState({ min: 0, max: 0, range: 0 });
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
@@ -554,6 +555,10 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
   const visibleData = debouncedQuery ? searchIndex(corsicaData, debouncedQuery, ['event','details','parsedTitle','fileName','date']) : corsicaData;
 
   useEffect(() => {
+    onVisibleCountChange?.(visibleData.length);
+  }, [visibleData.length, onVisibleCountChange]);
+
+  useEffect(() => {
     if (!isTimeline) return;
 
     const updateViewportBounds = () => {
@@ -803,14 +808,16 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
                 setDesiredTimelineTimestamp(null);
               }
               setIsTimeline(true);
+            } else if (onShowIndexList) {
+              onShowIndexList();
             } else {
               setIsTimeline(false);
             }
           }}
           className={`stack-toggle-btn ${isTimeline ? 'active' : ''}`}
-          aria-label="Toggle timeline view"
+          aria-label={isTimeline ? 'Go to index list' : 'Go to timeline view'}
         >
-          <img src={isTimeline ? icon1 : icon2} alt="Toggle timeline" />
+          <img src={isTimeline ? indexTextIcon : indexTimelineIcon} alt={isTimeline ? 'Index list' : 'Timeline'} />
         </button>
       )}
       {debouncedQuery && (
@@ -943,10 +950,10 @@ const CorsicaFilename: React.FC<CorsicaFilenameProps> = ({ onShowIndexList, onSh
             </button>
           </div>
           {indexGroups.map((group) => (
-            <div key={group.year} className="index-year-row">
-              {/* <div className="index-year-meta">
+            <div key={group.year} className="index-year-row" style={{ position: 'relative' }}>
+              <div className="index-year-meta">
                 <div className="index-year-label">{group.year}</div>
-              </div> */}
+              </div>
               <div
                 className={isHorizontalScroll ? "svg-scroll-grid index-year-grid scroll-horizontal carousel-scroll" : "svg-scroll-grid index-year-grid"}
                 ref={isHorizontalScroll ? (el) => { rowRefs.current[group.year] = el; } : undefined}
