@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CorsicaNew from './corsicanew';
 import IndexList from './IndexList';
 import LoadingScreen from './LoadingScreen';
@@ -13,7 +13,7 @@ const LOADING_SCREEN_TYPE: 'images' | 'video' = 'video';
 const ARCHIVE_YEAR = new Date().getFullYear();
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'json' | 'filename' | 'list'>('filename');
+  const [view, setView] = useState<'json' | 'filename' | 'list'>('list');
   const [hasEnteredArchive, setHasEnteredArchive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isHorizontalScroll, setIsHorizontalScroll] = useState(false);
@@ -66,6 +66,29 @@ const App: React.FC = () => {
       setOpenFilenameInTimeline(false);
     }
   };
+
+  useEffect(() => {
+    if (!isArchiveMenuOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+
+      if (target.closest('.archive-top-menu') || target.closest('.archive-title-trigger')) {
+        return;
+      }
+
+      setIsArchiveMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    document.addEventListener('touchstart', handleOutsideClick, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [isArchiveMenuOpen]);
 
   return (
     <>

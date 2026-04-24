@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import indexText from './assets/CORSICA_STUDIOS_INDEX.txt?raw';
+import indexJson from './assets/CORSICA_STUDIOS_INDEX.json';
 import './App.css';
 import { useSearch } from './contexts/SearchContext';
 import searchIndex from './utils/search';
 import controlsMenuIcon from './assets/icons/galleryswitch.png';
 import playIcon from './assets/icons/play.png';
-import EventModal, { type EventModalData } from './components/EventModal';
+import { useAudio } from './components/AudioProvider';
 
 interface IndexEntry {
   date: string;
@@ -15,6 +16,8 @@ interface IndexEntry {
   posterUrl?: string;
   year: number;
   month: number;
+  day: number;
+  recordings?: { room1?: string | null; room2?: string | null };
 }
 
 interface IndexListProps {
@@ -128,13 +131,28 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
   const [filteredEntries, setFilteredEntries] = useState<IndexEntry[]>([]);
   const [posterMaps] = useState(() => buildPosterMaps());
   const { debouncedQuery, setQueryImmediate } = useSearch();
+  const audio = useAudio();
   const [collapsedYears, setCollapsedYears] = useState<Set<number>>(new Set());
   const [selectedEntry, setSelectedEntry] = useState<IndexEntry | null>(null);
+  const [isCompactMode, setIsCompactMode] = useState(false);
+  const [isClosingPreview, setIsClosingPreview] = useState(false);
+  const [showRecordingsOnly, setShowRecordingsOnly] = useState(false);
+  const [isIndexMenuOpen, setIsIndexMenuOpen] = useState(false);
 
   useEffect(() => {
     const lines = indexText.split('\n').filter(line => line.trim());
     const parsed: IndexEntry[] = [];
     const dateFallbackCursor = new Map<string, number>();
+
+    // Create a map of recordings data from JSON for quick lookup
+    const recordingsMap = new Map<string, { room1?: string | null; room2?: string | null }>();
+    (indexJson as Array<{ date: string; name: string; room1Url: string | null; room2Url: string | null }>).forEach(item => {
+      const key = `${item.date}__${slug(item.name)}`;
+      recordingsMap.set(key, {
+        room1: item.room1Url,
+        room2: item.room2Url
+      });
+    });
 
     for (const line of lines) {
       // Match format: DD.MM.YYYY – TITLE: DETAILS
@@ -157,6 +175,7 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
           }
         }
         
+        const recordings = recordingsMap.get(key);
         parsed.push({
           date,
           dateISO,
@@ -164,13 +183,15 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
           details: match[3].trim(),
           posterUrl,
           year: parseInt(year, 10),
-          month: parseInt(month, 10)
+          month: parseInt(month, 10),
+          day: parseInt(day, 10),
+          recordings: recordings ? { room1: recordings.room1, room2: recordings.room2 } : undefined
         });
       }
     }
 
     // Sort by year and month descending (newest first)
-    parsed.sort((a, b) => {
+    parsed.sort((a: IndexEntry, b: IndexEntry) => {
       if (b.year !== a.year) return b.year - a.year;
       if (b.month !== a.month) return b.month - a.month;
       const [dayA] = a.date.split('.');
@@ -179,7 +200,7 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
     });
 
     setEntries(parsed);
-    setCollapsedYears(new Set(parsed.map(entry => entry.year)));
+    setCollapsedYears(new Set());
   }, [posterMaps]);
 
   useEffect(() => {
@@ -191,12 +212,41 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
     }
   }, [entries, debouncedQuery]);
 
-  const displayedEntries = filteredEntries;
+  const displayedEntries: IndexEntry[] = showRecordingsOnly 
+    ? filteredEntries.filter(entry => entry.recordings?.room1 || entry.recordings?.room2)
+    : filteredEntries;
 
   useEffect(() => {
-    onVisibleCountChange?.(displayedEntries.length);
+    if (onVisibleCountChange) {
+      onVisibleCountChange(displayedEntries.length);
+    }
   }, [displayedEntries.length, onVisibleCountChange]);
 
+  // Handle menu close on escape key and click outside
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isIndexMenuOpen) {
+        setIsIndexMenuOpen(false);
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (isIndexMenuOpen && !target.closest('.index-menu-btn') && !target.closest('.index-menu')) {
+        setIsIndexMenuOpen(false);
+      }
+    };
+
+    if (isIndexMenuOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isIndexMenuOpen]);
   // Group by year and month
   const groupedByYear: { [year: number]: { [month: number]: IndexEntry[] } } = {};
   displayedEntries.forEach(entry => {
@@ -224,20 +274,77 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
     });
   };
 
-  const selectedModalData: EventModalData | null = selectedEntry
-    ? {
-        src: selectedEntry.posterUrl,
-        fileName: selectedEntry.title,
-        event: selectedEntry.title,
-        date: selectedEntry.dateISO,
-        year: selectedEntry.year,
-        details: selectedEntry.details,
-      }
-    : null;
-
   const closeControlsAfter = (action?: () => void) => {
     if (action) action();
     setShowRightIcons(false);
+  };
+
+  // Inline preview component for list view
+  interface InlinePreviewDropdownProps {
+    entry: IndexEntry;
+    onClose: () => void;
+    playIcon: string;
+    isClosing: boolean;
+  }
+
+  const InlinePreviewDropdown: React.FC<InlinePreviewDropdownProps> = ({ entry, onClose, isClosing }) => {
+    const { setQueryImmediate: setQueryImmediateInner } = useSearch();
+
+    const handleArtistClick = (artist: string) => {
+      setQueryImmediateInner(artist);
+    };
+
+    return (
+      <div className={`entry-preview-dropdown${isClosing ? ' closing' : ''}`}>
+        <div className="preview-content">
+          {entry.posterUrl && (
+            <div className="preview-image-wrapper">
+              <img src={entry.posterUrl} alt={entry.title} className="preview-image" />
+            </div>
+          )}
+          <div className="preview-info">
+            <div className="preview-title">{entry.title}</div>
+            <div className="preview-date">{new Date(entry.dateISO).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            {entry.details && (
+              <div className="preview-details">{entry.details}</div>
+            )}
+            {entry.details && (
+              <div className="preview-artists">
+                {entry.details.split(/[,;\/\|]+|\s+and\s+|\s*&\s*/i).map(artist => artist.trim()).filter(Boolean).map((artist, i) => (
+                  <button
+                    key={i}
+                    className="artist-chip"
+                    onClick={() => handleArtistClick(artist)}
+                  >
+                    {artist}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <button
+          className="preview-close-btn"
+          onClick={onClose}
+          aria-label="Close preview"
+        >
+          ×
+        </button>
+      </div>
+    );
+  };
+
+  const handlePlayRecording = (entry: IndexEntry, room: 'room1' | 'room2') => {
+    const recordingUrl = room === 'room1' ? entry.recordings?.room1 : entry.recordings?.room2;
+    if (!recordingUrl) return;
+
+    audio.handleNewMix({
+      url: recordingUrl,
+      event: entry.title,
+      date: entry.dateISO,
+      artists: entry.details,
+      roomLabel: room === 'room1' ? 'Room 1' : 'Room 2'
+    });
   };
 
   return (
@@ -260,6 +367,38 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
       >
         <img src={controlsMenuIcon} alt="Controls" />
       </button>
+
+      <button
+        onClick={() => setIsIndexMenuOpen(!isIndexMenuOpen)}
+        className="index-menu-btn"
+        aria-label="Toggle index menu"
+        title="Menu"
+      >
+        ☰
+      </button>
+
+      {isIndexMenuOpen && (
+        <div className="index-menu">
+          <button
+            onClick={() => {
+              setIsCompactMode(!isCompactMode);
+              setIsIndexMenuOpen(false);
+            }}
+            className="index-menu-item"
+          >
+            {isCompactMode ? '▢ Expand' : '▢ Compact'}
+          </button>
+          <button
+            onClick={() => {
+              setShowRecordingsOnly(!showRecordingsOnly);
+              setIsIndexMenuOpen(false);
+            }}
+            className="index-menu-item"
+          >
+            {showRecordingsOnly ? '✓ Recordings' : '○ Recordings'}
+          </button>
+        </div>
+      )}
 
       <div className="corsica-grid-controls">
         <div className={`controls-icons-stack ${showRightIcons ? 'show' : ''}`}>
@@ -332,35 +471,84 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
                   <h3 className="month-header">{monthNames[month - 1]}</h3>
                   <div className="entries-list">
                     {groupedByYear[year][month].map((entry, index) => (
-                      <div
-                        key={index}
-                        className="entry-item clickable"
-                        onClick={() => setSelectedEntry(entry)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault();
-                            setSelectedEntry(entry);
-                          }
-                        }}
-                      >
-                        <div className="entry-thumb-col">
-                          {entry.posterUrl && (
-                            <img
-                              src={entry.posterUrl}
-                              alt={entry.title}
-                              className="entry-poster"
-                            />
-                          )}
+                      <div key={index} className="entry-row-wrapper">
+                        <div
+                          className={`entry-item clickable${isCompactMode ? ' compact' : ''}${selectedEntry?.dateISO === entry.dateISO && selectedEntry?.title === entry.title ? ' selected' : ''}`}
+                          onClick={() => {
+                            if (selectedEntry?.dateISO === entry.dateISO && selectedEntry?.title === entry.title) {
+                              // Closing the preview
+                              setIsClosingPreview(true);
+                              setTimeout(() => {
+                                setSelectedEntry(null);
+                                setIsClosingPreview(false);
+                              }, 550);
+                            } else {
+                              // Opening a new preview
+                              setIsClosingPreview(false);
+                              setSelectedEntry(entry);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              if (selectedEntry?.dateISO === entry.dateISO && selectedEntry?.title === entry.title) {
+                                setIsClosingPreview(true);
+                                setTimeout(() => {
+                                  setSelectedEntry(null);
+                                  setIsClosingPreview(false);
+                                }, 550);
+                              } else {
+                                setIsClosingPreview(false);
+                                setSelectedEntry(entry);
+                              }
+                            }
+                          }}
+                        >
+                          <div className="entry-thumb-col">
+                            {entry.posterUrl && (
+                              <img
+                                src={entry.posterUrl}
+                                alt={entry.title}
+                                className="entry-poster"
+                              />
+                            )}
+                          </div>
+                          <div className="entry-date-col">{String(entry.day).padStart(2, '0')}</div>
+                          <div className="entry-main-col">
+                            <div className="entry-title">{entry.title}</div>
+                            {entry.details && (
+                              <div className="entry-details">{entry.details}</div>
+                            )}
+                          </div>
+                          <div className="entry-play-col">
+                            {(entry.recordings?.room1 || entry.recordings?.room2) && (
+                              <div className="entry-play-buttons">
+                                {entry.recordings?.room1 && (
+                                  <button className="entry-play-btn" title="Play Room 1" onClick={(e) => { e.stopPropagation(); handlePlayRecording(entry, 'room1'); }}>R1</button>
+                                )}
+                                {entry.recordings?.room2 && (
+                                  <button className="entry-play-btn" title="Play Room 2" onClick={(e) => { e.stopPropagation(); handlePlayRecording(entry, 'room2'); }}>R2</button>
+                                )}
+                              </div>
+                            )}
                         </div>
-                        <div className="entry-date-col">{entry.date}</div>
-                        <div className="entry-main-col">
-                          <div className="entry-title">{entry.title}</div>
-                          {entry.details && (
-                            <div className="entry-details">{entry.details}</div>
-                          )}
                         </div>
+                        {selectedEntry?.dateISO === entry.dateISO && selectedEntry?.title === entry.title && !isClosingPreview && (
+                          <InlinePreviewDropdown 
+                            entry={entry} 
+                            onClose={() => {
+                              setIsClosingPreview(true);
+                              setTimeout(() => {
+                                setSelectedEntry(null);
+                                setIsClosingPreview(false);
+                              }, 550);
+                            }} 
+                            playIcon={playIcon}
+                            isClosing={isClosingPreview}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -376,14 +564,6 @@ export default function IndexList({ onShowIndexRegular, onShowTimeline, onNextVi
       <div className="index-list-footer">
         Showing {displayedEntries.length} of {entries.length} entries
       </div>
-
-      {selectedModalData && (
-        <EventModal
-          selectedImage={selectedModalData}
-          onClose={() => setSelectedEntry(null)}
-          playIconSrc={playIcon}
-        />
-      )}
     </div>
   );
 }
